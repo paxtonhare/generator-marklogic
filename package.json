@@ -1,9 +1,13 @@
 {
   "name": "generator-marklogic",
   "version": "0.0.0",
-  "description": "A generator for Yeoman",
+  "description": "A MarkLogic REST + Roxy + Angular + Bootstrap generator for Yeoman",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "MarkLogic",
+    "roxy",
+    "angular",
+    "bootstrap"
   ],
   "homepage": "https://github.com/paxtonhare/generator-marklogic",
   "bugs": "https://github.com/paxtonhare/generator-marklogic/issues",
