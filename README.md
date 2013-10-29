@@ -1,7 +1,6 @@
 # generator-marklogic [![Build Status](https://secure.travis-ci.org/paxtonhare/generator-marklogic.png?branch=master)](https://travis-ci.org/paxtonhare/generator-marklogic)
 
-A MarkLogic REST + Roxy + Angular generator for [Yeoman](http://yeoman.io).
-
+A MarkLogic REST + Roxy + Angular generator for [Yeoman](http://yeoman.io). This generator will create a REST API based Roxy project with an angular UI.
 
 ## Getting Started
 
