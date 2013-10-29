@@ -13,8 +13,8 @@ describe('marklogic generator', function () {
       }
 
       this.app = helpers.createGenerator('marklogic:app', [
-        '../../app'
-      ]);
+        '../../app', '../../controller'
+      ], 'test-app');
       done();
     }.bind(this));
   });
