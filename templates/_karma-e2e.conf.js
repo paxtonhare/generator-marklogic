@@ -11,7 +11,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/e2e/**/*.js'
+      'ui/test/e2e/**/*.js'
     ],
 
     // list of files / patterns to exclude

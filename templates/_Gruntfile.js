@@ -7,6 +7,7 @@ var mountFolder = function (connect, dir) {
   return connect.static(require('path').resolve(dir));
 };
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+var rewriteRulesSnippet = require('grunt-connect-rewrite/lib/utils').rewriteRequest;
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -20,12 +21,12 @@ module.exports = function (grunt) {
 
   // configurable paths
   var yeomanConfig = {
-    app: 'app',
-    dist: 'dist'
+    app: 'ui/app',
+    dist: 'src'
   };
 
   try {
-    yeomanConfig.app = require('./bower.json').appPath || yeomanConfig.app;
+    yeomanConfig.app = require('ui/bower.json').appPath || yeomanConfig.app;
   } catch (e) {}
 
   grunt.initConfig({
@@ -45,8 +46,9 @@ module.exports = function (grunt) {
         },
         files: [
           '<%%= yeoman.app %>/{,*/}*.html',
+          '!<%%= yeoman.app %>/bower_components/**/*.html',
           '{.tmp,<%%= yeoman.app %>}/styles/{,*/}*.css',
-          '{.tmp,<%%= yeoman.app %>}/scripts/{,*/}*.js',
+          '{.tmp,<%%= yeoman.app %>}/scripts/**/*.js',
           '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -57,19 +59,23 @@ module.exports = function (grunt) {
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost'
       },
+      rules: {
+        '^/login$': '/'
+      },
       proxies: [
-        {
-          context: '/qtree',
-          host: 'ml6',
-          port: 8050,
+        /*{
+          context: '/v1',
+          host: 'ml-hostname',
+          port: ml-port,
           https: false,
           changeOrigin: false
-        }
+        }*/
       ],
       livereload: {
         options: {
           middleware: function (connect) {
             return [
+              rewriteRulesSnippet,
               proxySnippet,
               lrSnippet,
               mountFolder(connect, '.tmp'),
@@ -122,7 +128,8 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%%= yeoman.app %>/scripts/{,*/}*.js'
+        '<%%= yeoman.app %>/scripts/{,*/}*.js',
+        '!<%%= yeoman.app %>/scripts/vendor/{,*/}*.js'
       ]
     },
     recess: {
@@ -141,8 +148,7 @@ module.exports = function (grunt) {
           src: [
             '<%%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-            '<%%= yeoman.dist %>/fonts/{,*/}*.*'
+            '<%%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}'
           ]
         }
       }
@@ -196,7 +202,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%%= yeoman.app %>',
-          src: ['*.html', 'views/*.html'],
+          src: ['*.html', 'views/**/*.html'],
           dest: '<%%= yeoman.dist %>'
         }]
       }
@@ -223,6 +229,20 @@ module.exports = function (grunt) {
           ]
         }]
       },
+      fonts: {
+        files: [{
+          expand: true,
+          cwd: '<%%= yeoman.app %>/bower_components/bootstrap/fonts',
+          dest: '<%%= yeoman.app %>/fonts',
+          src: '*'
+        },
+        {
+          expand: true,
+          cwd: '<%%= yeoman.app %>/bower_components/font-awesome/fonts',
+          dest: '<%%= yeoman.app %>/fonts',
+          src: '*'
+        }]
+      },
       styles: {
         expand: true,
         cwd: '<%%= yeoman.app %>/styles',
@@ -233,15 +253,18 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'recess',
-        'copy:styles'
+        'copy:styles',
+        'copy:fonts'
       ],
       test: [
         'recess',
-        'copy:styles'
+        'copy:styles',
+        'copy:fonts'
       ],
       dist: [
         'recess',
         'copy:styles',
+        'copy:fonts',
         'imagemin',
         'htmlmin'
       ]
@@ -281,6 +304,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'concurrent:server',
+      'configureRewriteRules',
       'configureProxies',
       'connect:livereload',
       'open',

@@ -1,6 +1,6 @@
 {
   "name": "generator-marklogic",
-  "version": "0.0.0",
+  "version": "0.9.2",
   "description": "A MarkLogic REST + Roxy + Angular + Bootstrap generator for Yeoman",
   "keywords": [
     "yeoman-generator",
