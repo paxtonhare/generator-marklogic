@@ -1,3 +1,11 @@
-node_modules/
-bower_components/
-.DS_Store
+node_modules
+dist
+.tmp
+.sass-cache
+ui/app/bower_components
+ui/app/styles/main.css
+ui/app/fonts
+local.properties
+simplelogger*
+npm-debug.log
+*.map

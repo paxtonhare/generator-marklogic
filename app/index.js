@@ -39,7 +39,7 @@ MarklogicGenerator.prototype.dirTree = function app() {
   this.mkdir('ui/app');
   this.mkdir('ui/app/fonts');
   this.mkdir('ui/app/images');
-  this.mkdir('ui/app/styles');
+  this.mkdir('ui/app/styles/less');
   this.mkdir('ui/app/scripts');
   this.mkdir('ui/test');
   this.mkdir('ui/test/spec');
@@ -77,7 +77,7 @@ MarklogicGenerator.prototype.styles = function styles() {
   var files = ['main.less'];
 
   files.forEach(function (file) {
-    this.copy('styles/' + file, 'ui/app/styles/' + file);
+    this.copy('styles/' + file, 'ui/app/styles/less/' + file);
   }.bind(this));
 
   this.indexFile = this.appendFiles({
@@ -87,16 +87,21 @@ MarklogicGenerator.prototype.styles = function styles() {
     sourceFileList: files.map(function (file) {
       return 'styles/' + file.replace('.less', '.css');
     }),
-    searchPath: '.tmp'
+    searchPath: ['.tmp', 'app']
   });
 };
 
 MarklogicGenerator.prototype.js = function js() {
   var jsPlugins = [];
-  jsPlugins.push('bower_components/jquery/jquery.js');
+
+  jsPlugins.push('bower_components/jquery/dist/jquery.js');
   jsPlugins.push('bower_components/angular/angular.js');
-  jsPlugins.push('bower_components/angular-route/angular-route.js');
+  jsPlugins.push('bower_components/bootstrap/dist/js/bootstrap.js');
+  jsPlugins.push('bower_components/angular-resource/angular-resource.js');
   jsPlugins.push('bower_components/angular-cookies/angular-cookies.js');
+  jsPlugins.push('bower_components/angular-sanitize/angular-sanitize.js');
+  jsPlugins.push('bower_components/angular-route/angular-route.js');
+  jsPlugins.push('bower_components/angular-bootstrap/ui-bootstrap-tpls.js');
 
   this.indexFile = this.appendFiles({
     html: this.indexFile,
