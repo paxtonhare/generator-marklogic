@@ -35,6 +35,39 @@ var MarklogicGenerator = module.exports = function MarklogicGenerator(args, opti
 
 util.inherits(MarklogicGenerator, yeoman.generators.Base);
 
+MarklogicGenerator.prototype.askForAppType = function askForAppType() {
+  var cb = this.async();
+
+  var prompts = [{
+    type: 'rawlist',
+    name: 'appType',
+    message: 'Which app type would you like to create?',
+    choices: ['rest', 'hybrid', 'mvc'],
+    default: 'rest'
+  }];
+
+  this.prompt(prompts, function (props) {
+    this.appType = props.appType;
+    cb();
+  }.bind(this));
+};
+
+MarklogicGenerator.prototype.askForBranch = function askForBranch() {
+  var cb = this.async();
+
+  var prompts = [{
+    type: 'input',
+    name: 'branch',
+    message: 'Which Roxy branch would you like to use?',
+    default: 'master'
+  }];
+
+  this.prompt(prompts, function (props) {
+    this.branch = props.branch;
+    cb();
+  }.bind(this));
+};
+
 MarklogicGenerator.prototype.dirTree = function app() {
   this.mkdir('ui/app');
   this.mkdir('ui/app/fonts');
@@ -146,19 +179,19 @@ MarklogicGenerator.prototype.roxy = function roxy() {
           console.log(err);
         }
         else {
-          console.log ("chmod done");
+          console.log ('chmod done');
         }
       });
 
       var dir = path.resolve('..');
       process.chdir(dir);
-      var spawn = spawnCommand(cache, ['new', appname, '--server-version=7', '--app-type=rest', '--branch=dev', '--force']);
+      var spawn = spawnCommand(cache, ['new', appname, '--server-version=7', '--app-type=' + dis.appType, '--branch=' + dis.branch, '--force']);
       spawn.on('close', function(code) {
-        var build_props_file = path.join(dir, appname, 'deploy', 'build.properties');
-        var build_props = dis.readFileAsString(build_props_file);
-        build_props += "\nload-html-as-xml=false";
-        // console.log("blah:" + build_props);
-        dis.writeFileFromString(build_props, build_props_file);
+        var buildPropsFile = path.join(dir, appname, 'deploy', 'build.properties');
+        var buildProps = dis.readFileAsString(buildPropsFile);
+        buildProps += '\nload-html-as-xml=false';
+        // console.log("blah:" + buildProps);
+        dis.writeFileFromString(buildProps, buildPropsFile);
 
         // dir = path.join(dir, 'ui');
         // process.chdir(dir);
